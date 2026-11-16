@@ -155,8 +155,38 @@
   <ItemGroup>
     <ClInclude Include="Ball.h" />
     <ClInclude Include="Block.h" />
+    <ClInclude Include="Box2D\base.h" />
+    <ClInclude Include="Box2D\box2d.h" />
+    <ClInclude Include="Box2D\collision.h" />
+    <ClInclude Include="Box2D\config.h" />
+    <ClInclude Include="Box2D\constants.h" />
+    <ClInclude Include="Box2D\id.h" />
+    <ClInclude Include="Box2D\math_functions.h" />
+    <ClInclude Include="Box2D\math_types.h" />
+    <ClInclude Include="Box2D\types.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="color.h" />
+    <ClInclude Include="DirectXTK\Audio.h" />
+    <ClInclude Include="DirectXTK\BufferHelpers.h" />
+    <ClInclude Include="DirectXTK\CommonStates.h" />
+    <ClInclude Include="DirectXTK\DDSTextureLoader.h" />
+    <ClInclude Include="DirectXTK\DirectXHelpers.h" />
+    <ClInclude Include="DirectXTK\Effects.h" />
+    <ClInclude Include="DirectXTK\GamePad.h" />
+    <ClInclude Include="DirectXTK\GeometricPrimitive.h" />
+    <ClInclude Include="DirectXTK\GraphicsMemory.h" />
+    <ClInclude Include="DirectXTK\Keyboard.h" />
+    <ClInclude Include="DirectXTK\Model.h" />
+    <ClInclude Include="DirectXTK\Mouse.h" />
+    <ClInclude Include="DirectXTK\PostProcess.h" />
+    <ClInclude Include="DirectXTK\PrimitiveBatch.h" />
+    <ClInclude Include="DirectXTK\ScreenGrab.h" />
+    <ClInclude Include="DirectXTK\SimpleMath.h" />
+    <ClInclude Include="DirectXTK\SpriteBatch.h" />
+    <ClInclude Include="DirectXTK\SpriteFont.h" />
+    <ClInclude Include="DirectXTK\VertexTypes.h" />
+    <ClInclude Include="DirectXTK\WICTextureLoader.h" />
+    <ClInclude Include="DirectXTK\XboxDDSTextureLoader.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="gameScene.h" />
     <ClInclude Include="Gimmick.h" />
@@ -172,6 +202,9 @@
     <ClInclude Include="texture.h" />
     <ClInclude Include="titleScene.h" />
     <ClInclude Include="WICTextureLoader11.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DirectXTK\SimpleMath.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
