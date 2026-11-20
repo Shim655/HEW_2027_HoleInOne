@@ -147,11 +147,15 @@
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="sprite.cpp" />
+    <ClCompile Include="stage.cpp" />
+    <ClCompile Include="stageSelectScene.cpp" />
     <ClCompile Include="stage_000.cpp" />
     <ClCompile Include="text.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="titleScene.cpp" />
     <ClCompile Include="WICTextureLoader11.cpp" />
+    <ClCompile Include="worldMap.cpp" />
+    <ClCompile Include="WorldMapStage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
@@ -199,11 +203,16 @@
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="sprite.h" />
+    <ClInclude Include="stage.h" />
+    <ClInclude Include="StageData.h" />
+    <ClInclude Include="stageSelectScene.h" />
     <ClInclude Include="stage_000.h" />
     <ClInclude Include="text.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="titleScene.h" />
     <ClInclude Include="WICTextureLoader11.h" />
+    <ClInclude Include="worldMap.h" />
+    <ClInclude Include="WorldMapStage.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DirectXTK\SimpleMath.inl" />

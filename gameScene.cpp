@@ -9,26 +9,32 @@
 * +-------------------------------------+
 */
 #include "camera.h"
-#include "stage_000.h"
-
+#include "worldMap.h"
+#include "stage.h"
 void InitializeGameScene(void)
 {
 	InitializeCamera();
-	InitializeStage_000();
+
+	//選択したステージのIDを取得
+	
+	const STAGE_ID stageId = GetSelectStageId();
+
+	//選択したステージIDに応じたステージを初期化
+	InitializeStage(stageId);
 }
 
 void FinalizeGameScene(void)
 {
-	FinalizeStage_000();
+	FinalizeStage();
 }
 
 void UpdateGameScene(void)
 {
 	UpdateCamera();
-	UpdateStage_000();
+	UpdateStage();
 }
 
 void DrawGameScene(void)
 {
-	DrawStage_000();
+	DrawStage();
 }

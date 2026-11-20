@@ -35,6 +35,7 @@ enum class SCENE
 {
 	NONE,
 	TITLE,
+	STAGE_SELECT,
 	GAME,
 	RESULT
 };
