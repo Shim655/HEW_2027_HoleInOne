@@ -44,6 +44,8 @@
 #include "text.h"
 #include "titleScene.h"
 #include "gameScene.h"
+#include "stageSelectScene.h"
+
 using namespace DirectX;
 
 
@@ -238,7 +240,7 @@ void Initialize(HINSTANCE hInstance, HWND hWnd)
 	g_scene = SCENE::NONE;
 	InitializeText();
 
-	SetScene(SCENE::GAME);
+	SetScene(SCENE::STAGE_SELECT);
 }
 
 void Finalize()
@@ -264,7 +266,9 @@ void Update()
 	case SCENE::TITLE:
 		UpdateTitleScene();
 		break;
-
+	case SCENE::STAGE_SELECT:
+		UpdateStageSelectScene();
+		break;
 	case SCENE::GAME:
 		UpdateGameScene();
 		break;
@@ -291,7 +295,9 @@ void Draw()
 	case SCENE::TITLE:
 		DrawTitleScene();
 		break;
-
+	case SCENE::STAGE_SELECT:
+		DrawStageSelectScene();
+		break;
 	case SCENE::GAME:
 		DrawGameScene();
 		break;
@@ -314,7 +320,9 @@ void SetScene(SCENE nextScene)
 	case SCENE::TITLE:
 		FinalizeTitleScene();
 		break;
-
+	case SCENE::STAGE_SELECT:
+		FinalizeStageSelectScene();
+		break;
 	case SCENE::GAME:
 		FinalizeGameScene();
 		break;
@@ -336,7 +344,9 @@ void SetScene(SCENE nextScene)
 	case SCENE::TITLE:
 		InitializeTitleScene();
 		break;
-
+	case SCENE::STAGE_SELECT:
+		InitializeStageSelectScene();
+		break;
 	case SCENE::GAME:
 		InitializeGameScene();
 		break;
