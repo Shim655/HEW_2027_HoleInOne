@@ -22,7 +22,7 @@ private:
 public:
 	WorldMapStage(STAGE_ID id);
 	
-	STAGE_ID GetStageId() const { return m_id; }
+	const STAGE_ID GetStageId() const { return m_id; }
 
 	bool CheckBoxCollider(DirectX::XMFLOAT2 targetPos, DirectX::XMFLOAT2 targetSize);
 

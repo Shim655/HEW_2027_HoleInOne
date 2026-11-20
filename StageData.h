@@ -37,13 +37,13 @@ struct StageObject
 
 };
 
-constexpr int OBJECT_MAX = 2;
+constexpr int MAX_OBJECTS = 2;
 //ステージを構成する情報
 //マスターデータの作成に使用
 struct StageData
 {
 	DirectX::XMFLOAT2 m_gravity = { 0.0f,0.0f };
-	StageObject m_pStageObjects[OBJECT_MAX] = { GIMMICK_TYPE::BLOCK,{0.0f,0.0f},0.0f };
+	StageObject m_stageObjects[MAX_OBJECTS] = { GIMMICK_TYPE::BLOCK,{0.0f,0.0f},0.0f };
 
 
 };

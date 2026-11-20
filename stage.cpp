@@ -172,11 +172,11 @@ void InitializeStage(STAGE_ID id)
 
 	SetGimmick(GIMMICK_TYPE::BALL, RESET_POSITION, 0.0f);
 
-	for (int i = 0; i < OBJECT_MAX; i++)
+	for (int i = 0; i < MAX_OBJECTS; i++)
 	{
-		SetGimmick(g_stageData[stageId].m_pStageObjects[i].m_type,
-			g_stageData[stageId].m_pStageObjects[i].m_position,
-			g_stageData[stageId].m_pStageObjects[i].m_rotation);
+		SetGimmick(g_stageData[stageId].m_stageObjects[i].m_type,
+			g_stageData[stageId].m_stageObjects[i].m_position,
+			g_stageData[stageId].m_stageObjects[i].m_rotation);
 	}
 	PlayerGetGimmick(GIMMICK_TYPE::BLOCK);
 }

@@ -1,3 +1,13 @@
+/*
+* +-------------------------------------+
+* File   : [WorldMapStage.cpp]
+* Author : 小原 崚介
+* Date   : 2026/11/20
+*
+*
+* ワールドマップ上のステージの情報
+* +-------------------------------------+
+*/
 #include "WorldMapStage.h"
 #include "sprite.h"
 #include "text.h"
