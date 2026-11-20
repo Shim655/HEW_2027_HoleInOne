@@ -11,6 +11,7 @@
 #pragma once
 
 #include <DirectXMath.h>
+#include "Animation.h"
 
 void InitSprite(void);
 void UninitSprite(void);

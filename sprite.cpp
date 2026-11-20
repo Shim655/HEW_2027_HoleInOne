@@ -21,6 +21,8 @@ static constexpr unsigned int NUM_VERTEX = 4;
 
 static ID3D11Buffer* g_pVertexBuffer = nullptr;//頂点バッファ
 
+void SetCameraScroll(XMFLOAT2& position, XMFLOAT2& size);
+void SetMatrix2D(XMFLOAT2& position, XMFLOAT2& size, float rotation);
 
 void InitSprite(void)
 {
@@ -134,24 +136,10 @@ void DrawSpriteScroll(XMFLOAT2 position, XMFLOAT2 size, float rotation, int text
 	GetDeviceContext()->Unmap(g_pVertexBuffer, 0);
 
 	//カメラ
-	const XMFLOAT3 camera = GetCameraOffset();
-	const float centerX = SCREEN_WIDTH * 0.5f;
-	const float centerY = SCREEN_HEIGHT * 0.5f;
-	position.x += camera.x;
-	position.y += camera.y;
-	position.x = centerX + (position.x - centerX) * camera.z;
-	position.y = centerY + (position.y - centerY) * camera.z;
-	size.x *= camera.z;
-	size.y *= camera.z;
+	SetCameraScroll(position, size);
 
 	//2Dマトリクス設定
-	const XMMATRIX scaleMatrix = XMMatrixScaling(size.x, size.y, 1.0f);
-	const XMMATRIX rotationMatrix = XMMatrixRotationZ(rotation);
-	const XMMATRIX translationMatrix = XMMatrixTranslation(position.x, position.y, 0.0f);
-	const XMMATRIX worldMatrix = scaleMatrix * rotationMatrix * translationMatrix;
-	const XMMATRIX viewMatrix = XMMatrixIdentity();
-	const XMMATRIX projectionMatrix = XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 100.0f);
-	SetRendererMatrix(worldMatrix * viewMatrix * projectionMatrix);
+	SetMatrix2D(position, size, rotation);
 
 
 	// 頂点バッファを描画パイプラインに設定 
@@ -364,3 +352,94 @@ void DrawSpriteAnime(
 	GetDeviceContext()->Draw(4, 0);
 }
 
+void DrawSpriteAnimeScroll(XMFLOAT2 position, XMFLOAT2 size, float rotation, const Animation& animation, XMFLOAT4 color)
+{
+	SetTexture(animation.GetTextureID());
+
+	// 頂点バッファをロックする 
+	D3D11_MAPPED_SUBRESOURCE msr;
+	GetDeviceContext()->Map(g_pVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+
+	// 頂点バッファへの仮想ポインタを取得 
+	VERTEX_3D* v = (VERTEX_3D*)msr.pData;
+
+	//頂点座標
+	v[0].Position = { -0.5f, -0.5f,0.0f };
+	v[1].Position = { 0.5f, -0.5f,0.0f };
+	v[2].Position = { -0.5f, 0.5f,0.0f };
+	v[3].Position = { 0.5f, 0.5f,0.0f };
+
+	//テクスチャ座標
+	const XMFLOAT2 textureCoordinate = animation.GetTextureCoordinate();
+	const XMFLOAT2 textureSize = animation.GetTextureSize();
+	v[0].TexCoord = { textureCoordinate.x,					textureCoordinate.y };
+	v[1].TexCoord = { textureCoordinate.x + textureSize.x ,	textureCoordinate.y };
+	v[2].TexCoord = { textureCoordinate.x ,					textureCoordinate.y + textureSize.y };
+	v[3].TexCoord = { textureCoordinate.x + textureSize.x ,	textureCoordinate.y + textureSize.y };
+
+	//頂点色
+	v[0].Diffuse = color;
+	v[1].Diffuse = color;
+	v[2].Diffuse = color;
+	v[3].Diffuse = color;
+
+	// 頂点バッファのロックを解除 
+	GetDeviceContext()->Unmap(g_pVertexBuffer, 0);
+
+	//カメラ
+	const XMFLOAT3 camera = GetCameraOffset();
+	const float centerX = SCREEN_WIDTH * 0.5f;
+	const float centerY = SCREEN_HEIGHT * 0.5f;
+	position.x += camera.x;
+	position.y += camera.y;
+	position.x = centerX + (position.x - centerX) * camera.z;
+	position.y = centerY + (position.y - centerY) * camera.z;
+	size.x *= camera.z;
+	size.y *= camera.z;
+
+	//2Dマトリクス設定
+	const XMMATRIX scaleMatrix = XMMatrixScaling(size.x, size.y, 1.0f);
+	const XMMATRIX rotationMatrix = XMMatrixRotationZ(rotation);
+	const XMMATRIX translationMatrix = XMMatrixTranslation(position.x, position.y, 0.0f);
+	const XMMATRIX worldMatrix = scaleMatrix * rotationMatrix * translationMatrix;
+	const XMMATRIX viewMatrix = XMMatrixIdentity();
+	const XMMATRIX projectionMatrix = XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 100.0f);
+	SetRendererMatrix(worldMatrix * viewMatrix * projectionMatrix);
+
+	// 頂点バッファを描画パイプラインに設定 
+	UINT stride = sizeof(VERTEX_3D);
+	UINT offset = 0;
+	GetDeviceContext()->IASetVertexBuffers(0, 1, &g_pVertexBuffer, &stride, &offset);
+
+	//プリミティブトポロジの設定
+	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	// ポリゴン描画命令発⾏ 
+	GetDeviceContext()->Draw(4, 0);
+}
+
+void SetCameraScroll(XMFLOAT2& position, XMFLOAT2& size)
+{
+	//カメラ
+	const XMFLOAT3 camera = GetCameraOffset();
+	const float centerX = SCREEN_WIDTH * 0.5f;
+	const float centerY = SCREEN_HEIGHT * 0.5f;
+	position.x += camera.x;
+	position.y += camera.y;
+	position.x = centerX + (position.x - centerX) * camera.z;
+	position.y = centerY + (position.y - centerY) * camera.z;
+	size.x *= camera.z;
+	size.y *= camera.z;
+}
+
+void SetMatrix2D(XMFLOAT2& position, XMFLOAT2& size, float rotation)
+{
+	//2Dマトリクス設定
+	const XMMATRIX scaleMatrix = XMMatrixScaling(size.x, size.y, 1.0f);
+	const XMMATRIX rotationMatrix = XMMatrixRotationZ(rotation);
+	const XMMATRIX translationMatrix = XMMatrixTranslation(position.x, position.y, 0.0f);
+	const XMMATRIX worldMatrix = scaleMatrix * rotationMatrix * translationMatrix;
+	const XMMATRIX viewMatrix = XMMatrixIdentity();
+	const XMMATRIX projectionMatrix = XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 100.0f);
+	SetRendererMatrix(worldMatrix * viewMatrix * projectionMatrix);
+}
