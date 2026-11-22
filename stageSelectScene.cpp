@@ -26,7 +26,7 @@ void FinalizeStageSelectScene(void)
 
 void UpdateStageSelectScene(void)
 {
-	UpdateCamera();
+	//UpdateCamera();
 	
 	UpdateWorldMap();
 

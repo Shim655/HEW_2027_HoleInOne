@@ -12,16 +12,12 @@
 #include "texture.h"
 using namespace DirectX;
 
-Animation::Animation(int numU, int numV)
-	: m_numU{ numU }
-	, m_numV{ numV }
-{
-
-}
-
-void Animation::Initialize(const wchar_t* fileName)
+void Animation::Initialize(const wchar_t* fileName, int numU, int numV)
 {
 	m_textureID = LoadTexture(fileName);
+	m_numU = numU;
+	m_numV = numV;
+	m_textureSize = { 1.0f / (float)numU,1.0f / (float)numV };
 
 	m_frameCount = 0;
 	m_isEnd = false;

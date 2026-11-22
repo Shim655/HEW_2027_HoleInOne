@@ -155,6 +155,7 @@
     <ClCompile Include="titleScene.cpp" />
     <ClCompile Include="WICTextureLoader11.cpp" />
     <ClCompile Include="worldMap.cpp" />
+    <ClCompile Include="WorldMapPlayer.cpp" />
     <ClCompile Include="WorldMapStage.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -212,6 +213,7 @@
     <ClInclude Include="titleScene.h" />
     <ClInclude Include="WICTextureLoader11.h" />
     <ClInclude Include="worldMap.h" />
+    <ClInclude Include="WorldMapPlayer.h" />
     <ClInclude Include="WorldMapStage.h" />
   </ItemGroup>
   <ItemGroup>

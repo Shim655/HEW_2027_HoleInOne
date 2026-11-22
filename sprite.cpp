@@ -23,7 +23,6 @@ static ID3D11Buffer* g_pVertexBuffer = nullptr;//頂点バッファ
 
 void SetCameraScroll(XMFLOAT2& position, XMFLOAT2& size);
 void SetMatrix2D(XMFLOAT2& position, XMFLOAT2& size, float rotation);
-
 void InitSprite(void)
 {
 	// 頂点バッファ⽣成
@@ -197,13 +196,7 @@ void DrawSpriteZoom(DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 size, float ro
 	size.y *= camera.z;
 
 	//2Dマトリクス設定
-	const XMMATRIX scaleMatrix = XMMatrixScaling(size.x, size.y, 1.0f);
-	const XMMATRIX rotationMatrix = XMMatrixRotationZ(rotation);
-	const XMMATRIX translationMatrix = XMMatrixTranslation(position.x, position.y, 0.0f);
-	const XMMATRIX worldMatrix = scaleMatrix * rotationMatrix * translationMatrix;
-	const XMMATRIX viewMatrix = XMMatrixIdentity();
-	const XMMATRIX projectionMatrix = XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 100.0f);
-	SetRendererMatrix(worldMatrix * viewMatrix * projectionMatrix);
+	SetMatrix2D(position, size, rotation);
 
 
 	// 頂点バッファを描画パイプラインに設定 
@@ -352,7 +345,7 @@ void DrawSpriteAnime(
 	GetDeviceContext()->Draw(4, 0);
 }
 
-void DrawSpriteAnimeScroll(XMFLOAT2 position, XMFLOAT2 size, float rotation, const Animation& animation, XMFLOAT4 color)
+void DrawSpriteAnimeScroll(XMFLOAT2 position, XMFLOAT2 size, float rotation, const Animation& animation, bool flip, XMFLOAT4 color)
 {
 	SetTexture(animation.GetTextureID());
 
@@ -372,10 +365,21 @@ void DrawSpriteAnimeScroll(XMFLOAT2 position, XMFLOAT2 size, float rotation, con
 	//テクスチャ座標
 	const XMFLOAT2 textureCoordinate = animation.GetTextureCoordinate();
 	const XMFLOAT2 textureSize = animation.GetTextureSize();
-	v[0].TexCoord = { textureCoordinate.x,					textureCoordinate.y };
-	v[1].TexCoord = { textureCoordinate.x + textureSize.x ,	textureCoordinate.y };
-	v[2].TexCoord = { textureCoordinate.x ,					textureCoordinate.y + textureSize.y };
-	v[3].TexCoord = { textureCoordinate.x + textureSize.x ,	textureCoordinate.y + textureSize.y };
+	if (flip)
+	{
+		v[0].TexCoord = { textureCoordinate.x + textureSize.x,	textureCoordinate.y };
+		v[1].TexCoord = { textureCoordinate.x ,					textureCoordinate.y };
+		v[2].TexCoord = { textureCoordinate.x + textureSize.x ,	textureCoordinate.y + textureSize.y };
+		v[3].TexCoord = { textureCoordinate.x  ,				textureCoordinate.y + textureSize.y };
+	}
+	else
+	{
+		v[0].TexCoord = { textureCoordinate.x,					textureCoordinate.y };
+		v[1].TexCoord = { textureCoordinate.x + textureSize.x ,	textureCoordinate.y };
+		v[2].TexCoord = { textureCoordinate.x ,					textureCoordinate.y + textureSize.y };
+		v[3].TexCoord = { textureCoordinate.x + textureSize.x ,	textureCoordinate.y + textureSize.y };
+	}
+
 
 	//頂点色
 	v[0].Diffuse = color;
@@ -387,24 +391,10 @@ void DrawSpriteAnimeScroll(XMFLOAT2 position, XMFLOAT2 size, float rotation, con
 	GetDeviceContext()->Unmap(g_pVertexBuffer, 0);
 
 	//カメラ
-	const XMFLOAT3 camera = GetCameraOffset();
-	const float centerX = SCREEN_WIDTH * 0.5f;
-	const float centerY = SCREEN_HEIGHT * 0.5f;
-	position.x += camera.x;
-	position.y += camera.y;
-	position.x = centerX + (position.x - centerX) * camera.z;
-	position.y = centerY + (position.y - centerY) * camera.z;
-	size.x *= camera.z;
-	size.y *= camera.z;
+	SetCameraScroll(position, size);
 
 	//2Dマトリクス設定
-	const XMMATRIX scaleMatrix = XMMatrixScaling(size.x, size.y, 1.0f);
-	const XMMATRIX rotationMatrix = XMMatrixRotationZ(rotation);
-	const XMMATRIX translationMatrix = XMMatrixTranslation(position.x, position.y, 0.0f);
-	const XMMATRIX worldMatrix = scaleMatrix * rotationMatrix * translationMatrix;
-	const XMMATRIX viewMatrix = XMMatrixIdentity();
-	const XMMATRIX projectionMatrix = XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 100.0f);
-	SetRendererMatrix(worldMatrix * viewMatrix * projectionMatrix);
+	SetMatrix2D(position, size, rotation);
 
 	// 頂点バッファを描画パイプラインに設定 
 	UINT stride = sizeof(VERTEX_3D);

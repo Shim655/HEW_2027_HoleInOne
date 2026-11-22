@@ -17,6 +17,8 @@
 #include "sprite.h"
 #include "text.h"
 #include "keyboard.h"
+#include "WorldMapPlayer.h"
+using namespace DirectX;
 
 //ステージシンボルをまとめて管理
 WorldMapStage* g_pWorldMapStage[(int)STAGE_ID::STAGE_MAX] = { nullptr };
@@ -24,10 +26,8 @@ WorldMapStage* g_pWorldMapStage[(int)STAGE_ID::STAGE_MAX] = { nullptr };
 //最後に選択したステージのID
 STAGE_ID g_selectStageId = STAGE_ID::TUTORIAL;
 
-//デバッグ用プレイヤー
-DirectX::XMFLOAT2 g_playerPosition = {0.0f,0.0f};
-
-DirectX::XMFLOAT2 g_playerSize = { 0.0f,0.0f };
+//プレイヤー
+static WorldMapPlayer g_player({ 100.0f,300.0f }, { 150.0f,150.0f }, 0.0f);
 
 void InitializeWorldMap()
 {
@@ -44,11 +44,7 @@ void InitializeWorldMap()
 	}
 
 	g_selectStageId = STAGE_ID::TUTORIAL;
-
-	//仮のプレイヤーデータ プレイヤー作成時に消す
-	g_playerPosition = { 0.0f,0.0f };
-
-	g_playerSize = { 100.0f,100.0f };
+	g_player.Initialize();
 }
 void FinalizeWorldMap(void)
 {
@@ -61,16 +57,12 @@ void FinalizeWorldMap(void)
 			g_pWorldMapStage[i] = nullptr;
 		}
 	}
+
+	g_player.Finalize();
 }
 
 void UpdateWorldMap(void)
 {
-	//仮プレイヤー情報
-	DirectX::XMINT2 mousePosition = GetMousePosition();
-
-	//当たり判定の引数として渡すためにfloatにする
-	g_playerPosition = {(float)mousePosition.x,(float)mousePosition.y};
-
 	//全てのシンボルステージの当たり判定を取る
 	for (int i = 0; i < (int)STAGE_ID::STAGE_MAX; i++)
 	{
@@ -79,7 +71,7 @@ void UpdateWorldMap(void)
 		g_pWorldMapStage[i]->Update();
 
 		//当たり判定
-		if (g_pWorldMapStage[i]->CheckBoxCollider(g_playerPosition, g_playerSize))
+		if (g_pWorldMapStage[i]->CheckBoxCollider(g_player.GetPosition(), g_player.GetSize()))
 		{
 			//当たってたらグローバル変数に記録する
 			g_selectStageId = g_pWorldMapStage[i]->GetStageId();
@@ -89,12 +81,13 @@ void UpdateWorldMap(void)
 				GetMouseState(MOUSE::BUTTON_LEFT_UP))
 			{
 				SetScene(SCENE::GAME);
+				return;
 			}
 		}
 	}
 
 
-	
+	g_player.Update();
 
 }
 
@@ -108,15 +101,17 @@ void DrawWorldMap(void)
 
 	}
 
+	g_player.Draw();
+
 	//仮表示
 #if _DEBUG
 
+	const XMFLOAT2 playerPosition = g_player.GetPosition();
+	const std::wstring text0 = std::wstring{ L"最後に選択したステージID:" } + std::to_wstring((int)g_selectStageId);
 
-	DrawSpriteText(L"最後に選択したステージID", {100.0f,50.0f}, 2.0f);
+	DrawSpriteText(text0, { playerPosition.x - 100.0f,playerPosition.y - 50.0f }, 0.5f);
 
-	DrawSpriteText(std::to_wstring((int)g_selectStageId), { 900.0f,50.0f }, 2.0f);
-
-	DrawSpriteText(L"マウスがステージに当たっている & Enter or 左クリックでシーン切り替え", { 20.0f,550.0f }, 1.1f);
+	DrawSpriteText(L"プレイヤーがステージに当たっている & Enter or 左クリックでシーン切り替え", { 20.0f,20.0f }, 0.5f);
 
 #endif 
 

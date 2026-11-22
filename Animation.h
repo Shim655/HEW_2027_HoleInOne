@@ -15,9 +15,9 @@
 class Animation
 {
 public:
-	Animation(int numU, int numV);
+	Animation() = default;
 
-	void Initialize(const wchar_t* fileName);
+	void Initialize(const wchar_t* fileName, int numU, int numV);
 	void Finalize();
 	void Update();
 	bool IsAnimeEnd();
