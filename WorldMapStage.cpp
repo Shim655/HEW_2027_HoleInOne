@@ -11,6 +11,7 @@
 #include "WorldMapStage.h"
 #include "sprite.h"
 #include "text.h"
+#include "color.h"
 
 //idに応じた位置、サイズ等のデータを持ったWorldStageMapを返す マスターデータにすることを検討
 WorldMapStage::WorldMapStage(STAGE_ID id)
@@ -156,6 +157,6 @@ void WorldMapStage::Draw()
 
 	 //デバッグ用数字出力
 #if _DEBUG
-	DrawSpriteText(std::to_wstring((int)m_id), GameObject::GetPosition(),2.0f);
+	DrawSpriteText(std::to_wstring((int)m_id), GameObject::GetPosition(), 2.0f, GetColorCode(COLOR::BLACK));
 #endif
 }

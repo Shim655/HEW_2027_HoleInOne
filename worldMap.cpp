@@ -17,6 +17,7 @@
 #include "sprite.h"
 #include "text.h"
 #include "keyboard.h"
+#include "color.h"
 #include "WorldMapPlayer.h"
 using namespace DirectX;
 
@@ -28,6 +29,9 @@ STAGE_ID g_selectStageId = STAGE_ID::TUTORIAL;
 
 //プレイヤー
 static WorldMapPlayer g_player({ 100.0f,300.0f }, { 150.0f,150.0f }, 0.0f);
+
+//背景
+GameObject g_background({ (float)SCREEN_WIDTH * 0.5f,(float)SCREEN_HEIGHT * 0.5f }, { (float)SCREEN_WIDTH,(float)SCREEN_HEIGHT }, 0.0f);
 
 void InitializeWorldMap()
 {
@@ -45,6 +49,7 @@ void InitializeWorldMap()
 
 	g_selectStageId = STAGE_ID::TUTORIAL;
 	g_player.Initialize();
+	g_background.SetTextureId(L"Asset\\WorldMapBackground.png");
 }
 void FinalizeWorldMap(void)
 {
@@ -59,6 +64,7 @@ void FinalizeWorldMap(void)
 	}
 
 	g_player.Finalize();
+	g_background.ReleaseTextureId();
 }
 
 void UpdateWorldMap(void)
@@ -93,6 +99,8 @@ void UpdateWorldMap(void)
 
 void DrawWorldMap(void)
 {
+	DrawSprite(g_background.GetPosition(), g_background.GetSize(), 0.0f, g_background.GetTextureID());
+
 	for (int i = 0; i < (int)STAGE_ID::STAGE_MAX; i++)
 	{
 		if (g_pWorldMapStage[i] == nullptr) continue;
@@ -109,9 +117,9 @@ void DrawWorldMap(void)
 	const XMFLOAT2 playerPosition = g_player.GetPosition();
 	const std::wstring text0 = std::wstring{ L"最後に選択したステージID:" } + std::to_wstring((int)g_selectStageId);
 
-	DrawSpriteText(text0, { playerPosition.x - 100.0f,playerPosition.y - 50.0f }, 0.5f);
+	DrawSpriteText(text0, { playerPosition.x - 100.0f,playerPosition.y - 50.0f }, 0.5f, GetColorCode(COLOR::BLACK));
 
-	DrawSpriteText(L"プレイヤーがステージに当たっている & Enter or 左クリックでシーン切り替え", { 20.0f,20.0f }, 0.5f);
+	DrawSpriteText(L"プレイヤーがステージに当たっている & Enter or 左クリックでシーン切り替え", { 20.0f,20.0f }, 0.5f, GetColorCode(COLOR::BLACK));
 
 #endif 
 
