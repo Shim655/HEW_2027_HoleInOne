@@ -26,11 +26,11 @@ WorldMapPlayer::WorldMapPlayer(DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 siz
 void WorldMapPlayer::Initialize(void)
 {
 	m_animations[(int)STATE::IDLE] = new Animation;
-	m_animations[(int)STATE::IDLE]->Initialize(L"asset\\Player_Idle.png", 8, 1);
-	m_animations[(int)STATE::IDLE]->SetAnimeSpeed(3);
+	m_animations[(int)STATE::IDLE]->Initialize(L"asset\\WorldMapPlayer_Walk.png", 10, 1);
+	m_animations[(int)STATE::IDLE]->SetAnimeSpeed(5);
 
 	m_animations[(int)STATE::WALK] = new Animation;
-	m_animations[(int)STATE::WALK]->Initialize(L"asset\\Player_Walk.png", 6, 1);
+	m_animations[(int)STATE::WALK]->Initialize(L"asset\\WorldMapPlayer_Walk.png", 10, 1);
 	m_animations[(int)STATE::WALK]->SetAnimeSpeed(5);
 
 	m_state = STATE::IDLE;

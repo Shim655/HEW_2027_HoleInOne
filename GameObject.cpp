@@ -17,6 +17,11 @@ void GameObject::SetTextureId(const wchar_t* fileName)
 	m_textureId = LoadTexture(fileName);
 }
 
+void GameObject::ReleaseTextureId(void)
+{
+	ReleaseTexture(m_textureId);
+}
+
 void GameObject::SetRigidBody(b2WorldId worldId, b2BodyType bodyType)
 {
 	m_rigidBody = std::make_unique<RigidBody>();

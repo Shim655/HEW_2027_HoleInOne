@@ -44,6 +44,7 @@ public:
 		m_rotation = rotation;
 	}
 	void SetTextureId(const wchar_t* fileName);
+	void ReleaseTextureId(void);
 	void SetRigidBody(b2WorldId worldId, b2BodyType bodyType);
 
 	DirectX::XMFLOAT2 GetPosition(void) const
