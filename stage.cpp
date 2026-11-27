@@ -257,7 +257,9 @@ void DrawStage(void)
 	case STAGE_STATE::SETTING:
 		if (g_pPlayer)
 		{
+
 			/*const XMINT2 mousePosition = GetMousePosition();*/
+
 			const XMFLOAT2 drawPosition = g_pPlayer->GetPosition();
 
 			DrawSpriteZoom(drawPosition, g_pPlayer->GetSize(), g_pPlayer->GetRotation(), g_pPlayer->GetTextureID(), g_pPlayer->GetColor());
@@ -344,47 +346,40 @@ void Setting(void)
 	{
 		XMFLOAT2 playerPosition = g_pPlayer->GetPosition();
 
-		////マウスの座標をカメラに合わせて補正
-		//const XMINT2 mousePosition = GetMousePosition();
-		const XMFLOAT3 cameraOffset = GetCameraOffset();
-		const float centerX = SCREEN_WIDTH * 0.5f;
-		const float centerY = SCREEN_HEIGHT * 0.5f;
-		//playerPosition.x = (float)mousePosition.x;
-		//playerPosition.y = (float)mousePosition.y;
-		//playerPosition.x = centerX + (playerPosition.x - centerX) / cameraOffset.z;
-		//playerPosition.y = centerY + (playerPosition.y - centerY) / cameraOffset.z;
-		//playerPosition.x -= cameraOffset.x;
-		//playerPosition.y -= cameraOffset.y;
-
-		const GamePad::State state = GetGamePadState();
-		
-		XMFLOAT2 stickPos = GetLeftStickPos();
-
-		if (stickPos.x > 0.0f)
+		//コントローラーが接続されている場合はコントローラーのみ操作可能
+		//接続されていない場合はマウスの位置となる
+		if (GetGamePadConnected()) 
 		{
-			playerPosition.x += SPEED_PLAYER;
-		}
-		else if (stickPos.x < 0.0f)
-		{
-			playerPosition.x -= SPEED_PLAYER;
-		}
+			//コントローラーが接続されている場合
 
 
-		if (stickPos.y > 0.0f)
-		{
-			playerPosition.y -= SPEED_PLAYER;
-		}
-		else if (stickPos.y < 0.0f)
-		{
-			playerPosition.y += SPEED_PLAYER;
-		}
+			const GamePad::State state = GetGamePadState();
 
-		g_pPlayer->SetPosition(playerPosition);
+			XMFLOAT2 stickPos = GetLeftStickPos();
+
+			if (stickPos.x > 0.0f)
+			{
+				playerPosition.x += SPEED_PLAYER;
+			}
+			else if (stickPos.x < 0.0f)
+			{
+				playerPosition.x -= SPEED_PLAYER;
+			}
 
 
-		//回転
-		if (state.IsConnected())
-		{
+			if (stickPos.y > 0.0f)
+			{
+				playerPosition.y -= SPEED_PLAYER;
+			}
+			else if (stickPos.y < 0.0f)
+			{
+				playerPosition.y += SPEED_PLAYER;
+			}
+
+			g_pPlayer->SetPosition(playerPosition);
+
+
+			//回転
 			if (state.IsLeftShoulderPressed())
 			{
 				g_pPlayer->SetRotation(g_pPlayer->GetRotation() - ROTATION_SPEED);
@@ -399,7 +394,23 @@ void Setting(void)
 				SetGimmick(GIMMICK_TYPE::BLOCK, g_pPlayer->GetPosition(), g_pPlayer->GetRotation());
 			}
 		}
+		else //コントローラーが接続できていない場合
+		{
+			XMFLOAT2 playerPosition = g_pPlayer->GetPosition();
+			//マウスの座標をカメラに合わせて補正
+			const XMINT2 mousePosition = GetMousePosition();
+			const XMFLOAT3 cameraOffset = GetCameraOffset();
+			const float centerX = SCREEN_WIDTH * 0.5f;
+			const float centerY = SCREEN_HEIGHT * 0.5f;
+			playerPosition.x = (float)mousePosition.x;
+			playerPosition.y = (float)mousePosition.y;
+			playerPosition.x = centerX + (playerPosition.x - centerX) / cameraOffset.z;
+			playerPosition.y = centerY + (playerPosition.y - centerY) / cameraOffset.z;
+			playerPosition.x -= cameraOffset.x;
+			playerPosition.y -= cameraOffset.y;
 
+			g_pPlayer->SetPosition(playerPosition);
+		}
 
 		if (Keyboard_IsKeyDown(KK_Q))
 		{
@@ -421,7 +432,6 @@ void Setting(void)
 	{
 		g_stageState = STAGE_STATE::RUN;
 	}
-
 
 }
 

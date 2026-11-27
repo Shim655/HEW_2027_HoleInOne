@@ -1,5 +1,16 @@
 #pragma once
 
+/*
+* +-------------------------------------+
+* File   : [gamePadControl.h]
+* Author : 小原崚介
+* Date   : 2026/11/27
+*
+*
+* ゲームパッドの状態管理と受け渡しを行う
+*
+* +-------------------------------------+
+*/
 
 #include "GamePad.h"
 #include "main.h"
@@ -70,6 +81,8 @@ enum class BUTTONSTATE
 	RIGHTSTICK_RELESE,
 };
 GamePad::State GetGamePadState();
+
+bool GetGamePadConnected();
 
 XMFLOAT2 GetLeftStickPos();
 

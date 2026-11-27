@@ -1,3 +1,14 @@
+/*
+* +-------------------------------------+
+* File   : [gamePadControl.cpp]
+* Author : 小原崚介
+* Date   : 2026/11/27
+*
+*
+* ゲームパッドの状態管理と受け渡しを行う
+*
+* +-------------------------------------+
+*/
 #include "gamePadControl.h"
 #include "GamePad.h"
 
@@ -34,6 +45,10 @@ void DrawGamePad(void)
 
 }
 
+bool GetGamePadConnected()
+{
+	return g_gamePad->GetState(0).connected;
+}
 GamePad::ButtonStateTracker GetTracker()
 {
 	return g_tracker;
@@ -43,7 +58,7 @@ GamePad::State GetGamePadState()
 	return g_gamePad->GetState(0);
 }
 
-
+//左スティックの倒し具合を二次元XMFLOATで返します [ 範囲 -1.0f ~ 1.0f 倒していない場合は0.0f]
 XMFLOAT2 GetLeftStickPos()
 {
 	GamePad::State state = g_gamePad->GetState(0);
@@ -54,6 +69,7 @@ XMFLOAT2 GetLeftStickPos()
 
 }
 
+//右スティックの倒し具合を二次元XMFLOATで返します [ 範囲 -1.0f ~ 1.0f 倒していない場合は0.0f]
 XMFLOAT2 GetRightStickPos()
 {
 	GamePad::State state = g_gamePad->GetState(0);
