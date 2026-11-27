@@ -31,7 +31,7 @@ STAGE_ID g_selectStageId = STAGE_ID::TUTORIAL;
 static WorldMapPlayer g_player({ 100.0f,300.0f }, { 150.0f,150.0f }, 0.0f);
 
 //îwåi
-GameObject g_background({ (float)SCREEN_WIDTH * 0.5f,(float)SCREEN_HEIGHT * 0.5f }, { (float)SCREEN_WIDTH,(float)SCREEN_HEIGHT }, 0.0f);
+static GameObject g_background({ (float)SCREEN_WIDTH * 0.5f,(float)SCREEN_HEIGHT * 0.5f }, { (float)SCREEN_WIDTH,(float)SCREEN_HEIGHT }, 0.0f);
 
 void InitializeWorldMap()
 {
