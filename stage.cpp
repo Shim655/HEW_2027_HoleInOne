@@ -48,12 +48,14 @@ SOFTWARE.
 #include "stage.h"
 #include "StageData.h"
 #include "text.h"
+#include "gamePadControl.h"
+
 using namespace DirectX;
 
 static constexpr int MAX_GIMMICK = 100;
 static constexpr float ROTATION_SPEED = 0.03f;
 static constexpr XMFLOAT2 RESET_POSITION = { 200.0f,10.0f };
-
+static constexpr float SPEED_PLAYER = 1.0f;
 
 static enum class STAGE_STATE
 {
@@ -65,6 +67,7 @@ static enum class STAGE_STATE
 static Gimmick* g_pGimmicks[MAX_GIMMICK]{ nullptr };
 static Gimmick* g_pPlayer{ nullptr };
 static STAGE_STATE g_stageState{ STAGE_STATE::SETTING };
+
 
 //Box2Dの物理エンジン用の変数
 //Box2DはIDでオブジェクトを管理している
@@ -144,10 +147,12 @@ static const StageData g_stageData[(int)STAGE_ID::STAGE_MAX] =
 //後々削除推奨
 static int g_stageId = 0;
 
+
 void InitializeStage(STAGE_ID id)
 {
 	const int stageId = (int)id;
-	
+
+
 	//デバッグ表示をするために記録
 	g_stageId = stageId;
 	//-------------------------------------
@@ -220,9 +225,17 @@ void UpdateStage(void)
 
 
 #if _DEBUG
-	if (Keyboard_IsKeyTrigger(KK_ESCAPE))
+
+	const GamePad::State state = GetGamePadState();
+
+	if (state.IsConnected())
 	{
-		SetScene(SCENE::STAGE_SELECT);
+		if (state.IsAPressed())
+		{
+			SetScene(SCENE::STAGE_SELECT);
+		}
+
+	
 	}
 #endif
 }
@@ -244,8 +257,9 @@ void DrawStage(void)
 	case STAGE_STATE::SETTING:
 		if (g_pPlayer)
 		{
-			const XMINT2 mousePosition = GetMousePosition();
-			const XMFLOAT2 drawPosition{ (float)mousePosition.x,(float)mousePosition.y };
+			/*const XMINT2 mousePosition = GetMousePosition();*/
+			const XMFLOAT2 drawPosition = g_pPlayer->GetPosition();
+
 			DrawSpriteZoom(drawPosition, g_pPlayer->GetSize(), g_pPlayer->GetRotation(), g_pPlayer->GetTextureID(), g_pPlayer->GetColor());
 		}
 		break;
@@ -264,7 +278,7 @@ void DrawStage(void)
 	//重力表示
 	DrawSpriteText(L"x = " + std::to_wstring(g_stageData[g_stageId].m_gravity.x) + L" y = " + std::to_wstring(g_stageData[g_stageId].m_gravity.y), {150.0f,600.0f}, 1.2f);
 
-	DrawSpriteText(L"ESC でステージセレクトに戻るよ!", { 400.0f,40.0f },1.5f);
+	//DrawSpriteText(L"ESC でステージセレクトに戻るよ!", { 400.0f,40.0f },1.5f);
 #endif
 }
 
@@ -329,20 +343,64 @@ void Setting(void)
 	if (g_pPlayer)
 	{
 		XMFLOAT2 playerPosition = g_pPlayer->GetPosition();
-		//マウスの座標をカメラに合わせて補正
-		const XMINT2 mousePosition = GetMousePosition();
+
+		////マウスの座標をカメラに合わせて補正
+		//const XMINT2 mousePosition = GetMousePosition();
 		const XMFLOAT3 cameraOffset = GetCameraOffset();
 		const float centerX = SCREEN_WIDTH * 0.5f;
 		const float centerY = SCREEN_HEIGHT * 0.5f;
-		playerPosition.x = (float)mousePosition.x;
-		playerPosition.y = (float)mousePosition.y;
-		playerPosition.x = centerX + (playerPosition.x - centerX) / cameraOffset.z;
-		playerPosition.y = centerY + (playerPosition.y - centerY) / cameraOffset.z;
-		playerPosition.x -= cameraOffset.x;
-		playerPosition.y -= cameraOffset.y;
+		//playerPosition.x = (float)mousePosition.x;
+		//playerPosition.y = (float)mousePosition.y;
+		//playerPosition.x = centerX + (playerPosition.x - centerX) / cameraOffset.z;
+		//playerPosition.y = centerY + (playerPosition.y - centerY) / cameraOffset.z;
+		//playerPosition.x -= cameraOffset.x;
+		//playerPosition.y -= cameraOffset.y;
+
+		const GamePad::State state = GetGamePadState();
+		
+		XMFLOAT2 stickPos = GetLeftStickPos();
+
+		if (stickPos.x > 0.0f)
+		{
+			playerPosition.x += SPEED_PLAYER;
+		}
+		else if (stickPos.x < 0.0f)
+		{
+			playerPosition.x -= SPEED_PLAYER;
+		}
+
+
+		if (stickPos.y > 0.0f)
+		{
+			playerPosition.y -= SPEED_PLAYER;
+		}
+		else if (stickPos.y < 0.0f)
+		{
+			playerPosition.y += SPEED_PLAYER;
+		}
+
 		g_pPlayer->SetPosition(playerPosition);
 
+
 		//回転
+		if (state.IsConnected())
+		{
+			if (state.IsLeftShoulderPressed())
+			{
+				g_pPlayer->SetRotation(g_pPlayer->GetRotation() - ROTATION_SPEED);
+			}
+			else if (state.IsRightShoulderPressed())
+			{
+				g_pPlayer->SetRotation(g_pPlayer->GetRotation() + ROTATION_SPEED);
+			}
+
+			if (GetStateGamePad(BUTTONSTATE::A_TRIGGER))
+			{
+				SetGimmick(GIMMICK_TYPE::BLOCK, g_pPlayer->GetPosition(), g_pPlayer->GetRotation());
+			}
+		}
+
+
 		if (Keyboard_IsKeyDown(KK_Q))
 		{
 			g_pPlayer->SetRotation(g_pPlayer->GetRotation() - ROTATION_SPEED);
@@ -363,6 +421,8 @@ void Setting(void)
 	{
 		g_stageState = STAGE_STATE::RUN;
 	}
+
+
 }
 
 void Run(void)

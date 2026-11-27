@@ -18,6 +18,8 @@
 #include "text.h"
 #include "keyboard.h"
 #include "WorldMapPlayer.h"
+#include "gamePadControl.h"
+
 using namespace DirectX;
 
 //ステージシンボルをまとめて管理
@@ -76,9 +78,11 @@ void UpdateWorldMap(void)
 			//当たってたらグローバル変数に記録する
 			g_selectStageId = g_pWorldMapStage[i]->GetStageId();
 
+
+
 			//ENTER KEY or マウス右クリックでシーン切り替え
 			if (Keyboard_IsKeyTrigger(KK_ENTER) ||
-				GetMouseState(MOUSE::BUTTON_LEFT_UP))
+				GetMouseState(MOUSE::BUTTON_LEFT_UP) || GetStateGamePad(BUTTONSTATE::A_TRIGGER))
 			{
 				SetScene(SCENE::GAME);
 				return;

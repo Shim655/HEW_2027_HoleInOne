@@ -30,7 +30,7 @@ void FinalizeGameScene(void)
 
 void UpdateGameScene(void)
 {
-	UpdateCamera();
+	//UpdateCamera();
 	UpdateStage();
 }
 

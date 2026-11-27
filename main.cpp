@@ -45,6 +45,7 @@
 #include "titleScene.h"
 #include "gameScene.h"
 #include "stageSelectScene.h"
+#include "gamePadControl.h"
 
 using namespace DirectX;
 
@@ -240,6 +241,8 @@ void Initialize(HINSTANCE hInstance, HWND hWnd)
 	g_scene = SCENE::NONE;
 	InitializeText();
 
+	InitializeGamePad();
+
 	SetScene(SCENE::STAGE_SELECT);
 }
 
@@ -280,6 +283,7 @@ void Update()
 		break;
 	}
 
+	UpdateGamePad();
 
 	Keyboard_Update();
 	Mouse_Update();

@@ -139,6 +139,7 @@
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="color.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="gamePadControl.cpp" />
     <ClCompile Include="gameScene.cpp" />
     <ClCompile Include="Gimmick.cpp" />
     <ClCompile Include="keyboard.cpp" />
@@ -195,6 +196,7 @@
     <ClInclude Include="DirectXTK\WICTextureLoader.h" />
     <ClInclude Include="DirectXTK\XboxDDSTextureLoader.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="gamePadControl.h" />
     <ClInclude Include="gameScene.h" />
     <ClInclude Include="Gimmick.h" />
     <ClInclude Include="keyboard.h" />

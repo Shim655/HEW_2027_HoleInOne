@@ -12,6 +12,8 @@
 #include "Animation.h"
 #include "keyboard.h"
 #include "sprite.h"
+#include "gamePadControl.h"
+
 using namespace DirectX;
 
 WorldMapPlayer::WorldMapPlayer(DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 size, float rotation)
@@ -52,6 +54,41 @@ void WorldMapPlayer::Finalize(void)
 void WorldMapPlayer::Update(void)
 {
 	m_state = STATE::IDLE;
+
+	const GamePad::State state = GetGamePadState();
+
+
+	if (state.connected)
+	{
+		XMFLOAT2 stickPos = GetLeftStickPos();
+
+		if (stickPos.x > 0.0f)
+		{
+			m_velocity.x += MOVE_SPEED;
+			m_state = STATE::WALK;
+			m_flip = false;
+		}
+		else if (stickPos.x < 0.0f)
+		{
+			m_velocity.x -= MOVE_SPEED;
+			m_state = STATE::WALK;
+			m_flip = true;
+		}
+
+
+		if (stickPos.y > 0.0f)
+		{
+			m_velocity.y -= MOVE_SPEED;
+			m_state = STATE::WALK;
+		}
+		else if (stickPos.y < 0.0f)
+		{
+			m_velocity.y += MOVE_SPEED;
+			m_state = STATE::WALK;
+		}
+
+		
+	}
 
 	if (Keyboard_IsKeyDown(KK_A))
 	{

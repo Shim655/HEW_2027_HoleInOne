@@ -12,6 +12,8 @@
 #include "renderer.h"
 #include "keyboard.h"
 #include "mouse.h"
+#include "gamePadControl.h"
+
 using namespace DirectX;
 
 static constexpr float SPEED_CAMERA = 10.0f;
@@ -21,7 +23,6 @@ static constexpr float ZOOM_MIN = 0.1f;
 
 
 static XMFLOAT3 g_cameraOffset{ 0.0f,0.0f,0.0f };
-
 
 const XMFLOAT3& GetCameraOffset(void)
 {
@@ -36,10 +37,38 @@ void SetCameraOffset(XMFLOAT3 cameraOffset)
 void InitializeCamera(void)
 {
 	g_cameraOffset = { 0.0f,0.0f,1.0f };
+
 }
 
 void UpdateCamera(void)
 {
+
+	const GamePad::State state = GetGamePadState();
+
+	if (state.connected)
+	{
+		XMFLOAT2 stickPos = GetLeftStickPos();
+
+		if (stickPos.x > 0.0f)
+		{
+			g_cameraOffset.x -= SPEED_CAMERA;
+		}
+		else if (stickPos.x < 0.0f)
+		{
+			g_cameraOffset.x += SPEED_CAMERA;
+		}
+
+
+		if (stickPos.y > 0.0f)
+		{
+			g_cameraOffset.y += SPEED_CAMERA;
+		}
+		else if (stickPos.y < 0.0f)
+		{
+			g_cameraOffset.y -= SPEED_CAMERA;
+		}
+	}
+
 	if (Keyboard_IsKeyDown(KK_W))
 	{
 		g_cameraOffset.y += SPEED_CAMERA;
@@ -72,4 +101,7 @@ void UpdateCamera(void)
 			g_cameraOffset.z = ZOOM_MIN;
 		}
 	}
+
+
+
 }
